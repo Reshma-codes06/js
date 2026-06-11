@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Marks Validation</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f172a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 36px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      border: 1px solid #334155;
+    }
+
+    h1 { color: #f1f5f9; font-size: 1.6rem; font-weight: 700; margin-bottom: 4px; }
+    .subtitle { color: #64748b; font-size: 0.88rem; margin-bottom: 28px; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+    label { color: #94a3b8; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
+
+    input {
+      background: #0f172a;
+      border: 1.5px solid #334155;
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #f1f5f9;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    input:focus { border-color: #6366f1; }
+    input.error { border-color: #ef4444; }
+    input.success { border-color: #22c55e; }
+
+    .err-msg { color: #f87171; font-size: 0.75rem; min-height: 16px; }
+
+    .btn-row { display: flex; gap: 12px; margin-top: 8px; }
+
+    button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+
+    button:active { transform: scale(0.98); }
+    #btnValidate { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; }
+    #btnReset { background: #334155; color: #94a3b8; }
+
+    #result {
+      margin-top: 24px;
+      border-radius: 12px;
+      padding: 20px;
+      display: none;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-pass { background: #052e16; border: 1px solid #16a34a; }
+    .result-fail { background: #2d0a0a; border: 1px solid #dc2626; }
+    .result-avg  { background: #1a1000; border: 1px solid #d97706; }
+
+    .result-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; }
+    .result-pass .result-title { color: #4ade80; }
+    .result-fail .result-title { color: #f87171; }
+    .result-avg  .result-title { color: #fbbf24; }
+
+    .result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+
+    .result-item {
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .result-item .sub { color: #94a3b8; font-size: 0.72rem; text-transform: uppercase; }
+    .result-item .val { color: #f1f5f9; font-size: 1.1rem; font-weight: 700; margin-top: 2px; }
+
+    .summary-line { color: #cbd5e1; font-size: 0.9rem; line-height: 1.6; }
+
+    .grade-badge {
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-left: 6px;
+    }
+
+    .grade-O { background:#14532d; color:#4ade80; }
+    .grade-A { background:#1e3a5f; color:#60a5fa; }
+    .grade-B { background:#2d1e53; color:#a78bfa; }
+    .grade-C { background:#3b2200; color:#fb923c; }
+    .grade-D { background:#1a1000; color:#fbbf24; }
+    .grade-F { background:#3b0000; color:#f87171; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>📊 Student Marks Validation</h1>
+  <p class="subtitle">Enter marks (0–100) for each subject</p>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Student Name</label>
+      <input type="text" id="name" placeholder="e.g. Arun Kumar" />
+      <span class="err-msg" id="nameErr"></span>
+    </div>
+    <div class="form-group">
+      <label>Roll Number</label>
+      <input type="text" id="roll" placeholder="e.g. 2024CS001" />
+      <span class="err-msg" id="rollErr"></span>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Tamil</label>
+      <input type="number" id="tamil" placeholder="0 - 100" />
+      <span class="err-msg" id="tamilErr"></span>
+    </div>
+    <div class="form-group">
+      <label>English</label>
+      <input type="number" id="english" placeholder="0 - 100" />
+      <span class="err-msg" id="englishErr"></span>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Mathematics</label>
+      <input type="number" id="maths" placeholder="0 - 100" />
+      <span class="err-msg" id="mathsErr"></span>
+    </div>
+    <div class="form-group">
+      <label>Science</label>
+      <input type="number" id="science" placeholder="0 - 100" />
+      <span class="err-msg" id="scienceErr"></span>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Social Science</label>
+      <input type="number" id="social" placeholder="0 - 100" />
+      <span class="err-msg" id="socialErr"></span>
+    </div>
+    <div class="form-group">
+      <label>Computer Science</label>
+      <input type="number" id="computer" placeholder="0 - 100" />
+      <span class="err-msg" id="computerErr"></span>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button id="btnValidate" onclick="validateMarks()">✅ Validate & Calculate</button>
+    <button id="btnReset" onclick="resetForm()">🔄 Reset</button>
+  </div>
+
+  <div id="result"></div>
+</div>
+
+<script>
+  const subjects = [
+    { id: 'tamil',    label: 'Tamil' },
+    { id: 'english',  label: 'English' },
+    { id: 'maths',    label: 'Maths' },
+    { id: 'science',  label: 'Science' },
+    { id: 'social',   label: 'Social' },
+    { id: 'computer', label: 'Computer' },
+  ];
+
+  function setError(id, msg) {
+    const el = document.getElementById(id);
+    const errEl = document.getElementById(id + 'Err');
+    el.className = msg ? 'error' : 'success';
+    if (errEl) errEl.textContent = msg;
+  }
+
+  function validateMarks() {
+    let valid = true;
+    const marks = {};
+
+    // Name
+    const name = document.getElementById('name').value.trim();
+    if (!name) {
+      setError('name', 'Name கொடுக்கவும்');
+      valid = false;
+    } else if (!/^[a-zA-Z\s.]+$/.test(name)) {
+      setError('name', 'Letters மட்டும் போடவும்');
+      valid = false;
+    } else {
+      setError('name', '');
+    }
+
+    // Roll
+    const roll = document.getElementById('roll').value.trim();
+    if (!roll) {
+      setError('roll', 'Roll number கொடுக்கவும்');
+      valid = false;
+    } else {
+      setError('roll', '');
+    }
+
+    // Marks
+    for (const sub of subjects) {
+      const val = document.getElementById(sub.id).value.trim();
+      if (val === '') {
+        setError(sub.id, sub.label + ' marks கொடுக்கவும்');
+        valid = false;
+      } else if (isNaN(val)) {
+        setError(sub.id, 'Numbers மட்டும் போடவும்');
+        valid = false;
+      } else {
+        const num = parseFloat(val);
+        if (num < 0 || num > 100) {
+          setError(sub.id, '0 to 100 மட்டும் valid');
+          valid = false;
+        } else if (!Number.isInteger(num)) {
+          setError(sub.id, 'Whole numbers மட்டும்');
+          valid = false;
+        } else {
+          setError(sub.id, '');
+          marks[sub.id] = num;
+        }
+      }
+    }
+
+    if (!valid) return;
+    showResult(name, roll, marks);
+  }
+
+  function getGrade(avg) {
+    if (avg >= 90) return { g: 'O', label: 'Outstanding' };
+    if (avg >= 80) return { g: 'A', label: 'Excellent' };
+    if (avg >= 70) return { g: 'B', label: 'Very Good' };
+    if (avg >= 60) return { g: 'C', label: 'Good' };
+    if (avg >= 50) return { g: 'D', label: 'Average' };
+    return            { g: 'F', label: 'Fail' };
+  }
+
+  function showResult(name, roll, marks) {
+    const values = subjects.map(s => marks[s.id]);
+    const total  = values.reduce((a, b) => a + b, 0);
+    const avg    = total / subjects.length;
+    const failed = subjects.filter(s => marks[s.id] < 35);
+    const pass   = failed.length === 0;
+    const { g, label } = getGrade(avg);
+
+    let resultClass = pass ? (avg >= 60 ? 'result-pass' : 'result-avg') : 'result-fail';
+    let title = pass
+      ? (avg >= 75 ? '🎉 PASS — Great Job!' : '✅ PASS')
+      : '❌ FAIL — ' + failed.length + ' subject(s) failed';
+
+    let itemsHTML = subjects.map(s => `
+      <div class="result-item">
+        <div class="sub">${s.label}</div>
+        <div class="val" style="color:${marks[s.id] < 35 ? '#f87171' : '#4ade80'}">${marks[s.id]}</div>
+      </div>
+    `).join('');
+
+    let failList = failed.length
+      ? '<br>🔴 Failed: <strong style="color:#f87171">' + failed.map(s => s.label).join(', ') + '</strong>'
+      : '';
+
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = `
+      <div class="result-title">${title}</div>
+      <div class="result-grid">${itemsHTML}</div>
+      <div class="summary-line">
+        👤 <strong style="color:#f1f5f9">${name}</strong> &nbsp;|&nbsp; 🎫 ${roll}<br>
+        📝 Total: <strong style="color:#f1f5f9">${total} / ${subjects.length * 100}</strong>
+        &nbsp;&nbsp; 📊 Average: <strong style="color:#f1f5f9">${avg.toFixed(1)}%</strong>
+        &nbsp;&nbsp; Grade: <span class="grade-badge grade-${g}">${g} — ${label}</span>
+        ${failList}
+      </div>
+    `;
+    resultDiv.className = resultClass;
+    resultDiv.style.display = 'block';
+  }
+
+  function resetForm() {
+    document.getElementById('name').value = '';
+    document.getElementById('roll').value = '';
+    subjects.forEach(s => {
+      const el = document.getElementById(s.id);
+      el.value = '';
+      el.className = '';
+      document.getElementById(s.id + 'Err').textContent = '';
+    });
+    ['name', 'roll'].forEach(id => {
+      document.getElementById(id).className = '';
+      const err = document.getElementById(id + 'Err');
+      if (err) err.textContent = '';
+    });
+    const r = document.getElementById('result');
+    r.style.display = 'none';
+    r.innerHTML = '';
+  }
+</script>
+</body>
+</html>
