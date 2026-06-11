@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product Calculator</title>
+</head>
+<body>
+
+    <h2>Product Calculator</h2>
+
+    Name: <input type="text" id="name"><br><br>
+
+    Qty: <input type="number" id="qty"><br><br>
+
+    Price: <input type="number" id="price"><br><br>
+
+    Tax (%): <input type="number" id="tax"><br><br>
+
+    <button onclick="calculate()">Calculate</button>
+
+    <h3 id="result"></h3>
+
+    <script>
+        function calculate() {
+            let qty = Number(document.getElementById("qty").value);
+            let price = Number(document.getElementById("price").value);
+            let tax = Number(document.getElementById("tax").value);
+
+            let subtotal = qty * price;
+            let total = subtotal + (subtotal * tax / 100);
+
+            document.getElementById("result").innerHTML =
+                "Total Amount = " + total;
+        }
+    </script>
+
+</body>
+</html>
